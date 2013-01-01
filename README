@@ -1,0 +1,7 @@
+fcitx-simple
+==========================
+
+This is a solution to run fcitx inside your own process, make it easy to run
+fcitx inside your application, not a standalone process.
+
+Besides that, it also provides some testing tool.
