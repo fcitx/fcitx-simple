@@ -1,0 +1,10 @@
+[Addon]
+Name=fcitx-simple-ui
+_GeneralName=A simple ui
+_Comment=UI that make fcitx can be used as a library
+Category=UI
+Enabled=False
+Library=fcitx-simple-ui.so
+Dependency=fcitx-simple-module
+Type=SharedLibrary
+Advance=True

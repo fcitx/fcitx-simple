@@ -1,0 +1,15 @@
+[FcitxAddon]
+Name=fcitx-simple-ui
+Prefix=SimpleUI
+Include0="simple.h"
+Function0=TriggerStatus
+Function1=TriggerMenuItem
+
+[TriggerStatus]
+Name=trigger-stataus
+Arg0=const char*
+
+[TriggerMenuItem]
+Name=get-semaphore
+Arg0=const char*
+Arg1=int

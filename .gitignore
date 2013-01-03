@@ -11,3 +11,4 @@ tags
 astyle.sh
 cscope.*
 *.part
+*.user
