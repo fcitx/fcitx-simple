@@ -146,6 +146,9 @@ void SimpleModuleProcessEvent(void* arg)
             case SE_TriggerStatus:
                 FcitxSimpleUITriggerStatus(instance, item->request->statusName);
                 break;
+            case SE_End:
+                FcitxInstanceEnd(instance);
+                break;
         }
         sem_post(&item->sem);
     }

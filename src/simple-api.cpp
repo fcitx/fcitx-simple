@@ -51,6 +51,7 @@ void FcitxSimpleSetCurrentIM(FcitxInstance *instance, const char *name)
     FcitxSimpleSendRequest<void>(instance, &request, NULL);
 }
 
+FCITX_EXPORT_API
 void FcitxSimpleTriggerMenuItem(FcitxInstance* instance, const char* name, int index)
 {
     FcitxSimpleRequest request;
@@ -61,11 +62,21 @@ void FcitxSimpleTriggerMenuItem(FcitxInstance* instance, const char* name, int i
     FcitxSimpleSendRequest<void>(instance, &request, NULL);
 }
 
+FCITX_EXPORT_API
 void FcitxSimpleTriggerStatus(FcitxInstance* instance, const char* name)
 {
     FcitxSimpleRequest request;
     request.type = SE_TriggerStatus;
     request.statusName = name;
+
+    FcitxSimpleSendRequest<void>(instance, &request, NULL);
+}
+
+FCITX_EXPORT_API
+void FcitxSimpleEnd(FcitxInstance* instance)
+{
+    FcitxSimpleRequest request;
+    request.type = SE_End;
 
     FcitxSimpleSendRequest<void>(instance, &request, NULL);
 }

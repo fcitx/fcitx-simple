@@ -37,6 +37,8 @@ void FcitxSimpleTriggerStatus(FcitxInstance* instance, const char* name);
 
 void FcitxSimpleTriggerMenuItem(FcitxInstance* instance, const char* name, int index);
 
+void FcitxSimpleEnd(FcitxInstance* instance);
+
 #ifdef __cplusplus
 }
 #endif

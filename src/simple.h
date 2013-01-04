@@ -33,13 +33,14 @@ typedef struct _FcitxSimpleCallQueue FcitxSimpleCallQueue;
 
 typedef struct _FcitxSimpleCallQueueItem FcitxSimpleCallQueueItem;
 
-typedef enum _FcitxSimpleEventType {
+typedef enum _FcitxSimpleRequestType {
     SE_KeyEventPress,
     SE_KeyEventRelease,
     SE_SetCurrentIM,
     SE_TriggerMenuItem,
-    SE_TriggerStatus
-} FcitxSimpleEventType;
+    SE_TriggerStatus,
+    SE_End
+} FcitxSimpleRequestType;
 
 typedef enum _FcitxSimpleServerEventType {
     SSE_ShowInputWindow,

@@ -192,6 +192,9 @@ int main(int argc, char* argv[])
 
         FcitxSimpleSendKeyEvent(instance, false, sym, state, 0);
     }
+
+    FcitxSimpleEnd(instance);
+    FcitxInstanceWaitForEnd(instance);
     ret = 0;
 option_error_end:
     if (fd >= 0)
