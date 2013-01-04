@@ -3,8 +3,12 @@ Name=fcitx-simple-frontend
 Prefix=SimpleFrontend
 Include0="simple.h"
 Function0=ProcessKey
+Function1=InitIC
 
 [ProcessKey]
 Name=process-key
 Arg0=FcitxSimpleRequest*
 Return=int
+
+[InitIC]
+Name=init-ic

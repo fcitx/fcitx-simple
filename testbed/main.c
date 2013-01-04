@@ -35,6 +35,7 @@ static void usage() {
     fprintf(stderr,
             "Usage: fcitx-testbed [OPTION] <addonname> [inputfile]\n"
             "\t-d <dir>\tsandbox directorys\n"
+            "\t-i <imname>\tim name to use\n"
             "\t-h\t\tdisplay this help and exit\n"
             "<addonname> is a comma separated list\n"
             "if inputfile is not specified, it will read stdin as input\n");
@@ -97,10 +98,14 @@ int main(int argc, char* argv[])
     char *buf = NULL, *buf1 = NULL;
     FILE* fp = NULL;
     char* enableAddon = NULL;
+    char* imname = NULL;
     int ret = 1;
     int fd = -1;
-    while ((c = getopt(argc, argv, "d:h")) != EOF) {
+    while ((c = getopt(argc, argv, "d:i:h")) != EOF) {
         switch (c) {
+            case 'i':
+                imname = strdup(optarg);
+                break;
             case 'd':
                 sandboxDirectory = strdup(optarg);
                 break;
@@ -173,6 +178,10 @@ int main(int argc, char* argv[])
     FcitxSimpleInit(instance, TestbedCallback, NULL);
     FcitxInstanceStart(instance);
     size_t len = 0;
+
+    if (imname) {
+        FcitxSimpleSetCurrentIM(instance, imname);
+    }
     while (getline(&buf, &len, fp) != -1) {
         fcitx_utils_free(buf1);
         buf1 = fcitx_utils_trim(buf);
@@ -194,6 +203,7 @@ option_error_end:
     if (ret)
         usage();
 
+    fcitx_utils_free(imname);
     fcitx_utils_free(buf);
     fcitx_utils_free(buf1);
     fcitx_utils_free(enableAddon);

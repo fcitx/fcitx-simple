@@ -29,6 +29,7 @@
 #include "simple.h"
 #include "simple-common.h"
 #include "fcitx-simple-frontend.h"
+#include "fcitx-simple-ui.h"
 
 typedef struct _FcitxSimpleModule {
     int selfPipe[2];
@@ -136,6 +137,15 @@ void SimpleModuleProcessEvent(void* arg)
                     *result = FcitxSimpleFrontendProcessKey(instance, item->request);
                     break;
                 }
+            case SE_SetCurrentIM:
+                FcitxInstanceSwitchIMByName(instance, item->request->imname);
+                break;
+            case SE_TriggerMenuItem:
+                FcitxSimpleUITriggerMenuItem(instance, item->request->menu.name, item->request->menu.index);
+                break;
+            case SE_TriggerStatus:
+                FcitxSimpleUITriggerStatus(instance, item->request->statusName);
+                break;
         }
         sem_post(&item->sem);
     }

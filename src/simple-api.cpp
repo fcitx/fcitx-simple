@@ -2,6 +2,7 @@
 #include "simple-common.h"
 #include "fcitx-simple-module.h"
 #include "fcitx-simple-ui.h"
+#include "fcitx-simple-frontend.h"
 
 template<typename T>
 static inline bool FcitxSimpleSendRequest(FcitxInstance* instance, FcitxSimpleRequest* request, T* result) {
@@ -22,6 +23,7 @@ void FcitxSimpleInit(FcitxInstance* instance, FcitxSimpleEventHandler eventHandl
     /* these function cache the result, hence we pre-cache before start */
     FcitxSimpleGetFD(instance);
     FcitxSimpleGetQueue(instance);
+    FcitxSimpleFrontendInitIC(instance);
     FcitxSimpleSetEventCallback(instance, eventHandler, userData);
 }
 
@@ -34,25 +36,36 @@ int FcitxSimpleSendKeyEvent(FcitxInstance *instance, boolean release, FcitxKeySy
     request.state = state;
     request.keycode = keycode;
 
-   int result = 0;
-   FcitxSimpleSendRequest<int>(instance, &request, &result);
-   return result;
+    int result = 0;
+    FcitxSimpleSendRequest<int>(instance, &request, &result);
+    return result;
 }
 
 FCITX_EXPORT_API
 void FcitxSimpleSetCurrentIM(FcitxInstance *instance, const char *name)
 {
-    int fd = FcitxSimpleGetFD(instance);
-    if (fd)
-        return;
+    FcitxSimpleRequest request;
+    request.type = SE_SetCurrentIM;
+    request.imname = name;
+
+    FcitxSimpleSendRequest<void>(instance, &request, NULL);
 }
 
 void FcitxSimpleTriggerMenuItem(FcitxInstance* instance, const char* name, int index)
 {
-    FcitxSimpleUITriggerMenuItem(instance, name, index);
+    FcitxSimpleRequest request;
+    request.type = SE_TriggerMenuItem;
+    request.menu.name = name;
+    request.menu.index = index;
+
+    FcitxSimpleSendRequest<void>(instance, &request, NULL);
 }
 
 void FcitxSimpleTriggerStatus(FcitxInstance* instance, const char* name)
 {
-    FcitxSimpleUITriggerStatus(instance, name);
+    FcitxSimpleRequest request;
+    request.type = SE_TriggerStatus;
+    request.statusName = name;
+
+    FcitxSimpleSendRequest<void>(instance, &request, NULL);
 }

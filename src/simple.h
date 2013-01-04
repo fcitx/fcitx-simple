@@ -36,6 +36,9 @@ typedef struct _FcitxSimpleCallQueueItem FcitxSimpleCallQueueItem;
 typedef enum _FcitxSimpleEventType {
     SE_KeyEventPress,
     SE_KeyEventRelease,
+    SE_SetCurrentIM,
+    SE_TriggerMenuItem,
+    SE_TriggerStatus
 } FcitxSimpleEventType;
 
 typedef enum _FcitxSimpleServerEventType {
@@ -74,6 +77,12 @@ typedef struct _FcitxSimpleRequest {
             uint32_t state;
             uint32_t keycode;
         };
+        const char* imname;
+        struct {
+            const char* name;
+            int index;
+        } menu;
+        const char* statusName;
     };
 } FcitxSimpleRequest;
 

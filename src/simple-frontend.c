@@ -50,6 +50,7 @@ static void SimpleFrontendUpdateClientSideUI(void* arg, FcitxInputContext* ic);
 static boolean SimpleFrontendCheckICFromSameApplication(void* arg, FcitxInputContext* icToCheck, FcitxInputContext* ic);
 static pid_t SimpleFrontendGetPid(void* arg, FcitxInputContext* ic);
 static void* SimpleFrontendProcessKey(FCITX_MODULE_FUNCTION_ARGS);
+static void* SimpleFrontendInitIC(FCITX_MODULE_FUNCTION_ARGS);
 
 FCITX_DEFINE_PLUGIN(fcitx_simple_frontend, frontend, FcitxFrontend) = {
     SimpleFrontendCreate,
@@ -81,8 +82,18 @@ void* SimpleFrontendCreate(FcitxInstance* instance, int frontendid)
     FcitxAddon *addon = FcitxAddonsGetAddonByName(addons, "fcitx-simple-frontend");
 
     FcitxModuleAddFunction(addon, SimpleFrontendProcessKey);
+    FcitxModuleAddFunction(addon, SimpleFrontendInitIC);
 
     return simple;
+}
+
+void* SimpleFrontendInitIC(FCITX_MODULE_FUNCTION_ARGS)
+{
+    FCITX_MODULE_SELF(simple, FcitxSimpleFrontend);
+
+    if (simple->ic == NULL)
+        simple->ic = FcitxInstanceCreateIC(simple->owner, simple->frontendid, NULL);
+    FcitxInstanceSetCurrentIC(simple->owner, simple->ic);
 }
 
 void* SimpleFrontendProcessKey(FCITX_MODULE_FUNCTION_ARGS)
