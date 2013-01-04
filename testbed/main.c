@@ -44,6 +44,7 @@ static void TestbedCallback(void* arg, FcitxSimpleEvent* event) {
 #define TESTBED_CASE(NAME) \
     case SSE_##NAME: \
         fprintf(stderr, "UI:" #NAME "\n");
+    FcitxInputState* input = FcitxInstanceGetInputState(instance);
     switch (event->type) {
         TESTBED_CASE(ShowInputWindow) {
             char* candidateword = FcitxUICandidateWordToCString(instance);
@@ -65,6 +66,16 @@ static void TestbedCallback(void* arg, FcitxSimpleEvent* event) {
             break;
         TESTBED_CASE(ShowMenu)
             break;
+        TESTBED_CASE(CommitString){
+            fprintf(stderr, "COMMIT:%s\n", event->commitString);
+            break;
+        }
+        TESTBED_CASE(UpdatePreedit) {
+            char* clientPreedit = FcitxUIMessagesToCString(FcitxInputStateGetClientPreedit(input));
+            fprintf(stderr, "CANDIDATE:%s\n", clientPreedit);
+            free(clientPreedit);
+            break;
+        }
     }
 
 #undef TESTBED_CASE

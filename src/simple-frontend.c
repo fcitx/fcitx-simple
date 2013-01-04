@@ -23,6 +23,7 @@
 #include "fcitx/module.h"
 
 #include "simple.h"
+#include "fcitx-simple-module.h"
 
 typedef struct _FcitxSimpleFrontend
 {
@@ -147,13 +148,18 @@ void SimpleFrontendCloseIM(void* arg, FcitxInputContext* ic)
 
 void SimpleFrontendCommitString(void* arg, FcitxInputContext* ic, const char* str)
 {
-
+    FcitxSimpleFrontend* simple = (FcitxSimpleFrontend*) arg;
+    FcitxSimpleEvent event;
+    event.type = SSE_CommitString;
+    event.commitString = str;
+    FcitxSimpleSendEvent(simple->owner, &event);
 }
 
 void SimpleFrontendCreateIC(void* arg, FcitxInputContext* context, void* priv)
 {
     // FcitxSimpleFrontend* simple = (FcitxSimpleFrontend*) arg;
     context->privateic = NULL;
+    context->contextCaps = CAPACITY_PREEDIT;
 }
 
 void SimpleFrontendDeleteSurroundingText(void* arg, FcitxInputContext* ic, int offset, unsigned int size)
@@ -208,5 +214,9 @@ void SimpleFrontendUpdateClientSideUI(void* arg, FcitxInputContext* ic)
 
 void SimpleFrontendUpdatePreedit(void* arg, FcitxInputContext* ic)
 {
+    FcitxSimpleFrontend* simple = (FcitxSimpleFrontend*) arg;
+    FcitxSimpleEvent event;
+    event.type = SSE_UpdatePreedit;
+    FcitxSimpleSendEvent(simple->owner, &event);
     return;
 }

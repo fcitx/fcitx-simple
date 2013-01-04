@@ -46,7 +46,9 @@ typedef enum _FcitxSimpleServerEventType {
     SSE_UpdateComplexStatus,
     SSE_UpdateStatus,
     SSE_RegisterMenu,
-    SSE_ShowMenu
+    SSE_ShowMenu,
+    SSE_CommitString,
+    SSE_UpdatePreedit
 } FcitxSimpleServerEventType;
 
 typedef struct _FcitxSimpleEvent {
@@ -58,6 +60,7 @@ typedef struct _FcitxSimpleEvent {
             FcitxUIMenu* menu;
             char* menuName;
         };
+        const char* commitString;
     };
 } FcitxSimpleEvent;
 
