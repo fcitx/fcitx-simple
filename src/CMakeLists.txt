@@ -19,13 +19,16 @@ set(fcitx_simple_ui_SOURCES
 
 fcitx_add_addon_full(simple-frontend SCAN
   SOURCES ${fcitx_simple_frontend_SOURCES}
+  SCAN_NO_INSTALL
 )
 fcitx_add_addon_full(simple-module SCAN
   SOURCES ${fcitx_simple_module_SOURCES}
   LINK_LIBS fcitx-simple-common
+  SCAN_NO_INSTALL
 )
 fcitx_add_addon_full(simple-ui SCAN
   SOURCES ${fcitx_simple_ui_SOURCES}
+  SCAN_NO_INSTALL
 )
 
 set(fcitx_simple_SOURCES simple-api.cpp)

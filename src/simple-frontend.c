@@ -93,7 +93,9 @@ void* SimpleFrontendInitIC(FCITX_MODULE_FUNCTION_ARGS)
 
     if (simple->ic == NULL)
         simple->ic = FcitxInstanceCreateIC(simple->owner, simple->frontendid, NULL);
-    FcitxInstanceSetCurrentIC(simple->owner, simple->ic);
+    if (FcitxInstanceSetCurrentIC(simple->owner, simple->ic))
+        FcitxUIOnInputFocus(simple->owner);
+    return NULL;
 }
 
 void* SimpleFrontendProcessKey(FCITX_MODULE_FUNCTION_ARGS)
