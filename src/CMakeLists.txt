@@ -31,7 +31,7 @@ fcitx_add_addon_full(simple-ui SCAN
   SCAN_NO_INSTALL
 )
 
-set(fcitx_simple_SOURCES simple-api.cpp)
+set(fcitx_simple_SOURCES simple-api.c)
 
 add_library(fcitx-simple SHARED ${fcitx_simple_SOURCES})
 

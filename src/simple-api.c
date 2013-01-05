@@ -4,8 +4,7 @@
 #include "fcitx-simple-ui.h"
 #include "fcitx-simple-frontend.h"
 
-template<typename T>
-static inline bool FcitxSimpleSendRequest(FcitxInstance* instance, FcitxSimpleRequest* request, T* result) {
+static inline boolean FcitxSimpleSendRequest(FcitxInstance* instance, FcitxSimpleRequest* request, void* result) {
     int fd = FcitxSimpleGetFD(instance);
     FcitxSimpleCallQueue* queue = FcitxSimpleGetQueue(instance);
     FcitxSimpleCallQueueItem* item = FcitxSimpleCallQueueEnqueue(queue, request, result);
@@ -37,7 +36,7 @@ int FcitxSimpleSendKeyEvent(FcitxInstance *instance, boolean release, FcitxKeySy
     request.keycode = keycode;
 
     int result = 0;
-    FcitxSimpleSendRequest<int>(instance, &request, &result);
+    FcitxSimpleSendRequest(instance, &request, &result);
     return result;
 }
 
@@ -48,7 +47,7 @@ void FcitxSimpleSetCurrentIM(FcitxInstance *instance, const char *name)
     request.type = SE_SetCurrentIM;
     request.imname = name;
 
-    FcitxSimpleSendRequest<void>(instance, &request, NULL);
+    FcitxSimpleSendRequest(instance, &request, NULL);
 }
 
 FCITX_EXPORT_API
@@ -59,7 +58,7 @@ void FcitxSimpleTriggerMenuItem(FcitxInstance* instance, const char* name, int i
     request.menu.name = name;
     request.menu.index = index;
 
-    FcitxSimpleSendRequest<void>(instance, &request, NULL);
+    FcitxSimpleSendRequest(instance, &request, NULL);
 }
 
 FCITX_EXPORT_API
@@ -69,7 +68,7 @@ void FcitxSimpleTriggerStatus(FcitxInstance* instance, const char* name)
     request.type = SE_TriggerStatus;
     request.statusName = name;
 
-    FcitxSimpleSendRequest<void>(instance, &request, NULL);
+    FcitxSimpleSendRequest(instance, &request, NULL);
 }
 
 FCITX_EXPORT_API
@@ -78,5 +77,5 @@ void FcitxSimpleEnd(FcitxInstance* instance)
     FcitxSimpleRequest request;
     request.type = SE_End;
 
-    FcitxSimpleSendRequest<void>(instance, &request, NULL);
+    FcitxSimpleSendRequest(instance, &request, NULL);
 }
