@@ -49,8 +49,7 @@ static boolean SimpleFrontendGetSurroundingText(void* arg, FcitxInputContext* ic
 static void SimpleFrontendUpdateClientSideUI(void* arg, FcitxInputContext* ic);
 static boolean SimpleFrontendCheckICFromSameApplication(void* arg, FcitxInputContext* icToCheck, FcitxInputContext* ic);
 static pid_t SimpleFrontendGetPid(void* arg, FcitxInputContext* ic);
-static void* SimpleFrontendProcessKey(FCITX_MODULE_FUNCTION_ARGS);
-static void* SimpleFrontendInitIC(FCITX_MODULE_FUNCTION_ARGS);
+DECLARE_ADDFUNCTIONS(SimpleFrontend)
 
 FCITX_DEFINE_PLUGIN(fcitx_simple_frontend, frontend, FcitxFrontend) = {
     SimpleFrontendCreate,
@@ -73,39 +72,36 @@ FCITX_DEFINE_PLUGIN(fcitx_simple_frontend, frontend, FcitxFrontend) = {
     SimpleFrontendGetSurroundingText
 };
 
-void* SimpleFrontendCreate(FcitxInstance* instance, int frontendid)
+void*
+SimpleFrontendCreate(FcitxInstance* instance, int frontendid)
 {
     FcitxSimpleFrontend* simple = fcitx_utils_new(FcitxSimpleFrontend);
     simple->owner = instance;
     simple->frontendid = frontendid;
-    UT_array *addons = FcitxInstanceGetAddons(instance);
-    FcitxAddon *addon = FcitxAddonsGetAddonByName(addons, "fcitx-simple-frontend");
-
-    FcitxModuleAddFunction(addon, SimpleFrontendProcessKey);
-    FcitxModuleAddFunction(addon, SimpleFrontendInitIC);
-
+    FcitxSimpleFrontendAddFunctions(instance);
     return simple;
 }
 
-void* SimpleFrontendInitIC(FCITX_MODULE_FUNCTION_ARGS)
+static void
+SimpleFrontendInitIC(FcitxSimpleFrontend *simple)
 {
-    FCITX_MODULE_SELF(simple, FcitxSimpleFrontend);
-
     if (simple->ic == NULL)
-        simple->ic = FcitxInstanceCreateIC(simple->owner, simple->frontendid, NULL);
-    if (FcitxInstanceSetCurrentIC(simple->owner, simple->ic))
+        simple->ic = FcitxInstanceCreateIC(simple->owner,
+                                           simple->frontendid, NULL);
+    if (FcitxInstanceSetCurrentIC(simple->owner, simple->ic)) {
         FcitxUIOnInputFocus(simple->owner);
-    return NULL;
+    }
 }
 
-void* SimpleFrontendProcessKey(FCITX_MODULE_FUNCTION_ARGS)
+static int
+SimpleFrontendProcessKey(FcitxSimpleFrontend *simple,
+                         FcitxSimpleRequest *request)
 {
-    FCITX_MODULE_SELF(simple, FcitxSimpleFrontend);
-    FCITX_MODULE_ARG(request, FcitxSimpleRequest*, 0);
-    FcitxInputState* input = FcitxInstanceGetInputState(simple->owner);
+    FcitxInputState *input = FcitxInstanceGetInputState(simple->owner);
 
     if (simple->ic == NULL)
-        simple->ic = FcitxInstanceCreateIC(simple->owner, simple->frontendid, NULL);
+        simple->ic = FcitxInstanceCreateIC(simple->owner,
+                                           simple->frontendid, NULL);
 
     FcitxInputContext* ic = FcitxInstanceGetCurrentIC(simple->owner);
 
@@ -137,10 +133,11 @@ void* SimpleFrontendProcessKey(FCITX_MODULE_FUNCTION_ARGS)
     FcitxInputStateSetKeySym(input, 0);
     FcitxInputStateSetKeyState(input, 0);
 
-    if (retVal & IRV_FLAG_FORWARD_KEY || retVal == IRV_TO_PROCESS)
+    if (retVal & IRV_FLAG_FORWARD_KEY || retVal == IRV_TO_PROCESS) {
         return 0;
-    else
-        return (void*) (intptr_t) 1;
+    } else {
+        return 1;
+    }
 }
 
 
@@ -233,3 +230,5 @@ void SimpleFrontendUpdatePreedit(void* arg, FcitxInputContext* ic)
     FcitxSimpleSendEvent(simple->owner, &event);
     return;
 }
+
+#include "fcitx-simple-frontend-addfunctions.h"
