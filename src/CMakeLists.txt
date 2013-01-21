@@ -1,6 +1,3 @@
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 set(fcitx_simple_common_SOURCES simple-common.c)
 
 add_library(fcitx-simple-common SHARED ${fcitx_simple_common_SOURCES})
@@ -17,16 +14,16 @@ set(fcitx_simple_ui_SOURCES
     simple-ui.c
 )
 
-fcitx_add_addon_full(simple-frontend SCAN
+fcitx_add_addon_full(simple-frontend SCAN SCAN_PRIV
   SOURCES ${fcitx_simple_frontend_SOURCES}
   SCAN_NO_INSTALL
 )
-fcitx_add_addon_full(simple-module SCAN
+fcitx_add_addon_full(simple-module SCAN SCAN_PRIV
   SOURCES ${fcitx_simple_module_SOURCES}
   LINK_LIBS fcitx-simple-common
   SCAN_NO_INSTALL
 )
-fcitx_add_addon_full(simple-ui SCAN
+fcitx_add_addon_full(simple-ui SCAN SCAN_PRIV
   SOURCES ${fcitx_simple_ui_SOURCES}
   SCAN_NO_INSTALL
 )

@@ -62,7 +62,7 @@ typedef struct _FcitxSimpleEvent {
         FcitxUIComplexStatus* compstatus;
         struct {
             FcitxUIMenu* menu;
-            char* menuName;
+            const char* menuName;
         };
         const char* commitString;
     };

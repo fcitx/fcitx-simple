@@ -2,6 +2,7 @@
 Name=fcitx-simple-frontend
 Prefix=SimpleFrontend
 Include0="simple.h"
+Self.Type=FcitxSimpleFrontend*
 Function0=ProcessKey
 Function1=InitIC
 
@@ -9,6 +10,8 @@ Function1=InitIC
 Name=process-key
 Arg0=FcitxSimpleRequest*
 Return=int
+Res.WrapFunc=SimpleFrontendProcessKey
 
 [InitIC]
 Name=init-ic
+Res.WrapFunc=SimpleFrontendInitIC

@@ -45,10 +45,7 @@ static void SimpleModuleSetFD(void* arg);
 static void SimpleModuleProcessEvent(void* arg);
 static void SimpleModuleDestroy(void* arg);
 static void SimpleModuleReloadConfig(void* arg);
-static void* SimpleModuleGetFD(FCITX_MODULE_FUNCTION_ARGS);
-static void* SimpleModuleGetQueue(FCITX_MODULE_FUNCTION_ARGS);
-static void* SimpleModuleSetEventCallback(FCITX_MODULE_FUNCTION_ARGS);
-static void* SimpleModuleSendEvent(FCITX_MODULE_FUNCTION_ARGS);
+DECLARE_ADDFUNCTIONS(Simple)
 
 FCITX_DEFINE_PLUGIN(fcitx_simple_module, module, FcitxModule) = {
     SimpleModuleCreate,
@@ -61,8 +58,6 @@ FCITX_DEFINE_PLUGIN(fcitx_simple_module, module, FcitxModule) = {
 void* SimpleModuleCreate(FcitxInstance* instance)
 {
     FcitxSimpleModule* simple = fcitx_utils_new(FcitxSimpleModule);
-    UT_array *addons = FcitxInstanceGetAddons(instance);
-    FcitxAddon *addon = FcitxAddonsGetAddonByName(addons, "fcitx-simple-module");
     simple->owner = instance;
 
     if (0 != pipe(simple->selfPipe)) {
@@ -75,26 +70,9 @@ void* SimpleModuleCreate(FcitxInstance* instance)
 
     simple->queue = FcitxSimpleCallQueueNew();
 
-    FcitxModuleAddFunction(addon, SimpleModuleGetFD);
-    FcitxModuleAddFunction(addon, SimpleModuleGetQueue);
-    FcitxModuleAddFunction(addon, SimpleModuleSetEventCallback);
-    FcitxModuleAddFunction(addon, SimpleModuleSendEvent);
-
+    FcitxSimpleAddFunctions(instance);
     return simple;
 }
-
-void* SimpleModuleGetFD(void* arg, FcitxModuleFunctionArg args)
-{
-    FcitxSimpleModule* simple = (FcitxSimpleModule*) arg;
-    return (void*) (intptr_t) simple->selfPipe[1];
-}
-
-void* SimpleModuleGetQueue(void* arg, FcitxModuleFunctionArg args)
-{
-    FcitxSimpleModule* simple = (FcitxSimpleModule*) arg;
-    return (void*) simple->queue;
-}
-
 
 void SimpleModuleDestroy(void* arg)
 {
@@ -112,8 +90,9 @@ void SimpleModuleSetFD(void* arg)
     FcitxInstance* instance = simple->owner;
     int maxfd = simple->selfPipe[0];
     FD_SET(maxfd, FcitxInstanceGetReadFDSet(instance));
-    if (maxfd > FcitxInstanceGetMaxFD(instance))
+    if (maxfd > FcitxInstanceGetMaxFD(instance)) {
         FcitxInstanceSetMaxFD(instance, maxfd);
+    }
 }
 
 void SimpleModuleProcessEvent(void* arg)
@@ -159,29 +138,21 @@ void SimpleModuleReloadConfig(void* arg)
 
 }
 
-void* SimpleModuleSendEvent(FCITX_MODULE_FUNCTION_ARGS)
+static void
+SimpleModuleSendEvent(FcitxSimpleModule *simple, FcitxSimpleEvent *event)
 {
-    FCITX_MODULE_SELF(simple, FcitxSimpleModule);
-    FCITX_MODULE_ARG(event, FcitxSimpleEvent*, 0);
-
     if (simple->eventCallback) {
         simple->eventCallback(simple->callbackArg, event);
     }
-
-    return NULL;
 }
 
-void* SimpleModuleSetEventCallback(FCITX_MODULE_FUNCTION_ARGS)
+static void
+SimpleModuleSetEventCallback(FcitxSimpleModule *simple,
+                             FcitxSimpleEventHandler eventCallback,
+                             void *callbackArg)
 {
-    FCITX_MODULE_SELF(simple, FcitxSimpleModule);
-    FCITX_MODULE_ARG(eventCallback, FcitxSimpleEventHandler, 0);
-    FCITX_MODULE_ARG(callbackArg, void*, 1);
-
     simple->eventCallback = eventCallback;
     simple->callbackArg = callbackArg;
-
-    return NULL;
 }
 
-
-
+#include "fcitx-simple-module-addfunctions.h"

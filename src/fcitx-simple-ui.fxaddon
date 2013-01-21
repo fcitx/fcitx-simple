@@ -1,6 +1,7 @@
 [FcitxAddon]
 Name=fcitx-simple-ui
 Prefix=SimpleUI
+Self.Type=FcitxSimpleUI*
 Include0="simple.h"
 Function0=TriggerStatus
 Function1=TriggerMenuItem
@@ -8,8 +9,10 @@ Function1=TriggerMenuItem
 [TriggerStatus]
 Name=trigger-stataus
 Arg0=const char*
+Res.WrapFunc=SimpleUITriggerStatus
 
 [TriggerMenuItem]
 Name=get-semaphore
 Arg0=const char*
 Arg1=int
+Res.WrapFunc=SimpleUITriggerMenuItem
