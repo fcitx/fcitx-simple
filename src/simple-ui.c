@@ -22,8 +22,7 @@
 #include "fcitx-simple-module.h"
 #include "fcitx/instance.h"
 
-typedef struct _FcitxSimpleUI
-{
+typedef struct _FcitxSimpleUI {
     FcitxInstance* owner;
 } FcitxSimpleUI;
 
@@ -37,8 +36,7 @@ static void SimpleUIRegisterStatus(void *arg, FcitxUIStatus* status);
 static void SimpleUIRegisterComplexStatus(void* arg, FcitxUIComplexStatus* status);
 static void SimpleUIUpdateComplexStatus(void* arg, FcitxUIComplexStatus* status);
 static void SimpleUIDestroy(void* arg);
-static void* SimpleUITriggerStatus(FCITX_MODULE_FUNCTION_ARGS);
-static void* SimpleUITriggerMenuItem(FCITX_MODULE_FUNCTION_ARGS);
+DECLARE_ADDFUNCTIONS(SimpleUI)
 
 FCITX_DEFINE_PLUGIN(fcitx_simple_ui, ui, FcitxUI) = {
     SimpleUICreate,
@@ -66,13 +64,8 @@ FCITX_DEFINE_PLUGIN(fcitx_simple_ui, ui, FcitxUI) = {
 void* SimpleUICreate(FcitxInstance* instance)
 {
     FcitxSimpleUI* ui = fcitx_utils_new(FcitxSimpleUI);
-    UT_array *addons = FcitxInstanceGetAddons(instance);
-    FcitxAddon *addon = FcitxAddonsGetAddonByName(addons, "fcitx-simple-module");
-
-    FcitxModuleAddFunction(addon, SimpleUITriggerStatus);
-    FcitxModuleAddFunction(addon, SimpleUITriggerMenuItem);
-
     ui->owner = instance;
+    FcitxSimpleUIAddFunctions(instance);
     return ui;
 }
 
@@ -144,12 +137,10 @@ void SimpleUIRegisterMenu(void* arg, FcitxUIMenu* menu)
 
 #define GetMenuItem(m, i) ((FcitxMenuItem*) utarray_eltptr(&(m)->shell, (i)))
 
-void* SimpleUITriggerStatus(FCITX_MODULE_FUNCTION_ARGS)
+static void
+SimpleUITriggerStatus(FcitxSimpleUI *ui, const char *statusName)
 {
-    FCITX_MODULE_SELF(ui, FcitxSimpleUI);
-    FCITX_MODULE_ARG(statusName, char*, 0);
-
-    FcitxInstance* instance = ui->owner;
+    FcitxInstance *instance = ui->owner;
     FcitxUIMenu *menu = FcitxUIGetMenuByStatusName(instance, statusName);
     if (menu) {
         menu->UpdateMenu(menu);
@@ -161,16 +152,15 @@ void* SimpleUITriggerStatus(FCITX_MODULE_FUNCTION_ARGS)
     } else {
         FcitxUIUpdateStatus(instance, statusName);
     }
-    return NULL;
 }
 
-void* SimpleUITriggerMenuItem(FCITX_MODULE_FUNCTION_ARGS)
+static void
+SimpleUITriggerMenuItem(FcitxSimpleUI *ui, const char *statusName, int index)
 {
-    FCITX_MODULE_SELF(ui, FcitxSimpleUI);
-    FCITX_MODULE_ARG(statusName, char*, 0);
-    FCITX_MODULE_ARG(index, int, 1);
-    FcitxUIMenu* menup = FcitxUIGetMenuByStatusName(ui->owner, statusName);
-    if (menup)
+    FcitxUIMenu *menup = FcitxUIGetMenuByStatusName(ui->owner, statusName);
+    if (menup) {
         menup->MenuAction(menup, index);
-    return NULL;
+    }
 }
+
+#include "fcitx-simple-ui-addfunctions.h"

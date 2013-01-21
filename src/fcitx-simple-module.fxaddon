@@ -2,6 +2,7 @@
 Name=fcitx-simple-module
 Prefix=Simple
 Include0="simple.h"
+Self.Type=FcitxSimpleModule*
 Function0=GetFD
 Function1=GetQueue
 Function2=SetEventCallback
@@ -12,17 +13,21 @@ Name=get-fd
 Return=int
 CacheResult=True
 ErrorReturn=-1
+Res.Exp=$<->selfPipe[1]
 
 [GetQueue]
 Name=get-queue
 Return=FcitxSimpleCallQueue*
 CacheResult=True
+Res.Exp=$<->queue
 
 [SetEventCallback]
 Name=set-event-callback
 Arg0=FcitxSimpleEventHandler
 Arg1=void*
+Res.WrapFunc=SimpleModuleSetEventCallback
 
 [SendEvent]
 Name=send-event
 Arg0=FcitxSimpleEvent*
+Res.WrapFunc=SimpleModuleSendEvent
