@@ -73,7 +73,7 @@ static void TestbedCallback(void* arg, FcitxSimpleEvent* event) {
         }
         TESTBED_CASE(UpdatePreedit) {
             char* clientPreedit = FcitxUIMessagesToCString(FcitxInputStateGetClientPreedit(input));
-            fprintf(stderr, "CANDIDATE:%s\n", clientPreedit);
+            fprintf(stderr, "PREEDIT:%s\n", clientPreedit);
             free(clientPreedit);
             break;
         }
