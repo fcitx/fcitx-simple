@@ -26,7 +26,8 @@
 #include <libintl.h>
 #include <getopt.h>
 
-#include "fcitx/instance.h"
+#include <fcitx/instance.h>
+#include <fcitx/hook.h>
 #include "simple-api.h"
 
 FcitxInstance* instance = NULL;
@@ -49,6 +50,11 @@ static void TestbedCallback(void* arg, FcitxSimpleEvent* event) {
     switch (event->type) {
         TESTBED_CASE(ShowInputWindow) {
             char* candidateword = FcitxUICandidateWordToCString(instance);
+            char* str = FcitxInstanceProcessOutputFilter(instance, candidateword);
+            if (str) {
+                free(candidateword);
+                candidateword = str;
+            }
             fprintf(stderr, "CANDIDATE:%s\n", candidateword);
             free(candidateword);
             break;
@@ -73,6 +79,11 @@ static void TestbedCallback(void* arg, FcitxSimpleEvent* event) {
         }
         TESTBED_CASE(UpdatePreedit) {
             char* clientPreedit = FcitxUIMessagesToCString(FcitxInputStateGetClientPreedit(input));
+            char* str = FcitxInstanceProcessOutputFilter(instance, clientPreedit);
+            if (str) {
+                free(clientPreedit);
+                clientPreedit = str;
+            }
             fprintf(stderr, "PREEDIT:%s\n", clientPreedit);
             free(clientPreedit);
             break;
