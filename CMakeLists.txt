@@ -16,7 +16,7 @@ set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/share/locale")
 
 add_definitions("-D_GNU_SOURCE")
 if(NOT DEFINED LIB_INSTALL_DIR)
-    set(LIB_INSTALL_DIR ${exec_prefix}/lib)
+    set(LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib)
 endif()
 
 list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${LIB_INSTALL_DIR}" _isSystemPlatformLibDir)
