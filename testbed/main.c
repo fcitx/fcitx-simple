@@ -185,8 +185,6 @@ int main(int argc, char* argv[])
 
     FcitxSimpleInit(instance, TestbedCallback, NULL);
     FcitxInstanceStart(instance);
-
-    usleep(1000);
     size_t len = 0;
 
     if (imname) {
@@ -201,6 +199,8 @@ int main(int argc, char* argv[])
         FcitxHotkeyParseKey(buf1, &sym, &state);
 
         FcitxSimpleSendKeyEvent(instance, false, sym, state, 0);
+
+        usleep(1000);
     }
 
     FcitxSimpleEnd(instance);
