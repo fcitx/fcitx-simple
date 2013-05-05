@@ -186,7 +186,7 @@ int main(int argc, char* argv[])
     FcitxSimpleInit(instance, TestbedCallback, NULL);
     FcitxInstanceStart(instance);
 
-    sleep(1);
+    usleep(1000);
     size_t len = 0;
 
     if (imname) {
