@@ -18,13 +18,10 @@
  *   51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.              *
  ***************************************************************************/
 
-#ifdef FCITX_HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <locale.h>
 #include <libintl.h>
 #include <getopt.h>
+#include <unistd.h>
 
 #include <fcitx/instance.h>
 #include <fcitx/hook.h>
@@ -188,6 +185,8 @@ int main(int argc, char* argv[])
 
     FcitxSimpleInit(instance, TestbedCallback, NULL);
     FcitxInstanceStart(instance);
+
+    sleep(1);
     size_t len = 0;
 
     if (imname) {
