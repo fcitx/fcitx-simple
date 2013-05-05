@@ -35,7 +35,7 @@ typedef struct _FcitxSimpleModule {
     int selfPipe[2];
     sem_t sem;
     FcitxInstance* owner;
-    FcitxSimpleEventHandler eventCallback;
+    volatile FcitxSimpleEventHandler eventCallback;
     void* callbackArg;
     FcitxSimpleCallQueue* queue;
 } FcitxSimpleModule;
