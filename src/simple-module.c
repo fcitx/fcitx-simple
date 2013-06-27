@@ -117,7 +117,15 @@ void SimpleModuleProcessEvent(void* arg)
                     break;
                 }
             case SE_SetCurrentIM:
-                FcitxInstanceSwitchIMByName(instance, item->request->imname);
+                {
+                    FcitxProfile* profile = FcitxInstanceGetProfile(instance);
+                    if (profile->imList) {
+                        free(profile->imList);
+                    }
+                    asprintf(&profile->imList, "%s:True", item->request->imname);
+                    FcitxInstanceUpdateIMList(instance);
+                    FcitxInstanceSwitchIMByName(instance, item->request->imname);
+                }
                 break;
             case SE_TriggerMenuItem:
                 FcitxSimpleUITriggerMenuItem(instance, item->request->menu.name, item->request->menu.index);
