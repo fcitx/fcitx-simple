@@ -198,7 +198,9 @@ int main(int argc, char* argv[])
         unsigned int state = 0;
         FcitxHotkeyParseKey(buf1, &sym, &state);
 
-        FcitxSimpleSendKeyEvent(instance, false, sym, state, 0);
+        if (FcitxSimpleSendKeyEvent(instance, false, sym, state, 0) == 0) {
+            fprintf(stderr, "FORWARD:%s\n", buf1);
+        }
 
         usleep(1000);
     }
